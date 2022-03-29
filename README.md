@@ -1,7 +1,7 @@
 ______________________________________________________________________
 <div align="center">
 
-# Face VAE
+# 🧖 Variational Autoencoder for human faces.
 
 <p align="center">
   <a href="https://github.com/wiktorlazarski">👨‍🎓 Wiktor</a>
@@ -9,8 +9,6 @@ ______________________________________________________________________
 </p>
 
 ______________________________________________________________________
-
-You may want to adjust badge links in a README.md file.
 
 [![ci-testing](https://github.com/wiktorlazarski/face-vae/actions/workflows/ci-testing.yml/badge.svg?branch=master&event=push)](https://github.com/wiktorlazarski/face-vae/actions/workflows/ci-testing.yml)
 [![Open In Collab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/pytorch/ignite/blob/master/examples/notebooks/FashionMNIST.ipynb)
