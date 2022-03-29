@@ -1,4 +1,4 @@
-name: ai_awesome_env  # Replace with your environment name
+name: face_vae
 channels:
   - conda-forge
 dependencies:

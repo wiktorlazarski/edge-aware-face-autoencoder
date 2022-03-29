@@ -1,6 +1,6 @@
 import typing as t
 
-import ai_awesome.model as mdl
+import face_vae.model as mdl
 
 
 class InferencePipeline:
