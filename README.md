@@ -1,7 +1,7 @@
 ______________________________________________________________________
 <div align="center">
 
-# 🧖 Edge-aware Autoencoder for human faces.
+# 🧖 Edge-aware face Autoencoder.
 
 <p align="center">
   <a href="https://github.com/wiktorlazarski">👨‍🎓 Wiktor</a>
@@ -56,7 +56,7 @@ cd edge-aware-face-autoencoder
 
 # Create and activate conda environment
 conda env create -f ./conda_env.yml
-conda activate face_vae
+conda activate face_autoencoder
 
 # (Optional but recommended) Install pre-commit hooks to preserve code format consistency
 pre-commit install
