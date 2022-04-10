@@ -1,6 +1,6 @@
 import typing as t
 
-import face_vae.model as mdl
+import face_autoencoder.model as mdl
 
 
 class InferencePipeline:

@@ -1,4 +1,4 @@
-name: face_vae
+name: face_autoencoder
 channels:
   - conda-forge
 dependencies:
