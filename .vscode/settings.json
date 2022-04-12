@@ -1,0 +1,13 @@
+{
+    "cSpell.words": [
+        "conv",
+        "convolutional",
+        "randn",
+        "relu"
+    ],
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
+}
