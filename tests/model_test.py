@@ -34,14 +34,18 @@ def test_encoder_output_size() -> None:
         (batch_size, 3, nn_input_image_resolution, nn_input_image_resolution)
     )
 
-    expected_result = torch.Size((batch_size, latent_dim))
+    expected_feature_maps_size = torch.Size((batch_size, latent_dim))
+    expected_mu_size = torch.Size((batch_size, latent_dim))
+    expected_log_var_size = torch.Size((batch_size, latent_dim))
 
     # when
     with torch.no_grad():
-        result = encoder.forward(mock_batch)
+        feature_maps, mu, log_var = encoder.forward(mock_batch)
 
     # then
-    assert result.size() == expected_result
+    assert feature_maps.size() == expected_feature_maps_size
+    assert mu.size() == expected_mu_size
+    assert log_var.size() == expected_log_var_size
 
 
 def test_decoder_output_size() -> None:
@@ -88,11 +92,15 @@ def test_variational_autoencoder_output_size() -> None:
         (batch_size, 3, nn_input_image_resolution, nn_input_image_resolution)
     )
 
-    expected_result = mock_batch.size()
+    expected_feature_maps_size = mock_batch.size()
+    expected_mu_size = torch.Size((batch_size, latent_dim))
+    expected_log_var_size = torch.Size((batch_size, latent_dim))
 
     # when
     with torch.no_grad():
-        result = vae.forward(mock_batch)
+        feature_maps, mu, log_var = vae.forward(mock_batch)
 
     # then
-    assert result.size() == expected_result
+    assert feature_maps.size() == expected_feature_maps_size
+    assert mu.size() == expected_mu_size
+    assert log_var.size() == expected_log_var_size

@@ -105,7 +105,7 @@ class VAEEncoder(nn.Module):
 
         z = eps * std + mu
 
-        return z
+        return z, mu, log_var
 
 
 class VAEDecoder(nn.Module):
@@ -242,7 +242,7 @@ class VanillaVAE(nn.Module):
         Returns:
             torch.Tensor: Reconstructed images.
         """
-        encoded_batch = self.encoder(batch)
+        encoded_batch, mu, log_var = self.encoder(batch)
         batch_reconstructions = self.decoder(encoded_batch)
 
-        return batch_reconstructions
+        return batch_reconstructions, mu, log_var
