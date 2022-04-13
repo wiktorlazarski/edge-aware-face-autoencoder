@@ -67,7 +67,7 @@ class TrainingModule(pl.LightningModule):
         self.save_hyperparameters()
 
         self.learning_rate = lr
-        self.criterion = losses.WeightedMSE()
+        self.criterion = losses.VanillaVAELoss()
 
         self.train_mse = torchmetrics.MeanSquaredError()
         self.val_mse = torchmetrics.MeanSquaredError()
