@@ -7,6 +7,7 @@ import torch.nn.functional as F
 
 class VAEEncoderError(Exception):
     """VAEEncoder error."""
+
     pass
 
 
@@ -53,7 +54,7 @@ class VAEEncoder(nn.Module):
         """Constructor.
 
         Args:
-            nn_input_image_resolution (int): Neural Network input image resolution. Assumed square image.
+            nn_input_image_resolution (int): Neural Network input image resolution. Assumes square image.
             latent_dim (int): Latend dimension size.
             hidden_dims (t.List[int], optional): Feature maps' channels hidden dimensions. Defaults to [32, 64, 128, 256, 512].
 
@@ -80,8 +81,8 @@ class VAEEncoder(nn.Module):
 
         self.cnn = nn.Sequential(*layers)
 
-        self.fc_mu = nn.Linear(hidden_dims[-1] * feature_map_res**2, latent_dim)
-        self.fc_var = nn.Linear(hidden_dims[-1] * feature_map_res**2, latent_dim)
+        self.fc_mu = nn.Linear(hidden_dims[-1] * feature_map_res ** 2, latent_dim)
+        self.fc_var = nn.Linear(hidden_dims[-1] * feature_map_res ** 2, latent_dim)
 
     def forward(self, batch: torch.Tensor) -> torch.Tensor:
         """Maps batch samples to latent dimension.
@@ -104,7 +105,7 @@ class VAEEncoder(nn.Module):
 
         z = eps * std + mu
 
-        return z
+        return z, mu, log_var
 
 
 class VAEDecoder(nn.Module):
@@ -150,7 +151,7 @@ class VAEDecoder(nn.Module):
         """Constructor.
 
         Args:
-            nn_output_image_res (int): Decoder output image resolution. Assumed square image.
+            nn_output_image_res (int): Decoder output image resolution. Assumes square image.
             latent_dim (int): Latend dimension size.
             hidden_dims (t.List[int], optional): Hidden feature map dimensions. Defaults to [512, 256, 128, 64, 32].
         """
@@ -159,7 +160,7 @@ class VAEDecoder(nn.Module):
 
         self.input_layer = nn.Linear(
             in_features=latent_dim,
-            out_features=hidden_dims[0] * self.feature_map_resolution**2,
+            out_features=hidden_dims[0] * self.feature_map_resolution ** 2,
         )
 
         layers = []
@@ -216,7 +217,7 @@ class VanillaVAE(nn.Module):
         """Constructor.
 
         Args:
-            nn_input_image_resolution (int): Neural Network input image resolution. Assumed square image. Defaults to 512.
+            nn_input_image_resolution (int): Neural Network input image resolution. Assumes square image. Defaults to 512.
             latent_dim (int): Latend dimension size. Defaults to 8.
             hidden_dims (t.List[int], optional): Feature maps' channels hidden dimensions. Defaults to [32, 64, 128, 256, 512].
         """
@@ -241,7 +242,7 @@ class VanillaVAE(nn.Module):
         Returns:
             torch.Tensor: Reconstructed images.
         """
-        encoded_batch = self.encoder(batch)
+        encoded_batch, mu, log_var = self.encoder(batch)
         batch_reconstructions = self.decoder(encoded_batch)
 
-        return batch_reconstructions
+        return batch_reconstructions, mu, log_var
