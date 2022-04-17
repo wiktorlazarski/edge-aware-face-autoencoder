@@ -1,7 +1,7 @@
 ______________________________________________________________________
 <div align="center">
 
-# 🧖 Edge-aware face Autoencoder
+# 👨‍🎨 Edge-aware face Autoencoder
 
 <p align="center">
   <a href="https://github.com/wiktorlazarski">👨‍🎓 Wiktor</a>
