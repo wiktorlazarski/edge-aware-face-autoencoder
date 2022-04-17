@@ -62,12 +62,14 @@ class TrainingModule(pl.LightningModule):
         nn_input_image_resolution: int,
         latent_dim: int,
         hidden_dims: t.List[int] = [32, 64, 128, 256, 512],
+        recon_loss_weight: float = 10_000.0,
+        kld_loss_weight: float = 1.0,
     ) -> None:
         super().__init__()
         self.save_hyperparameters()
 
         self.learning_rate = lr
-        self.criterion = losses.VanillaVAELoss()
+        self.criterion = losses.VanillaVAELoss(recon_loss_weight, kld_loss_weight)
 
         self.train_mse = torchmetrics.MeanSquaredError()
         self.val_mse = torchmetrics.MeanSquaredError()

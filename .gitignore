@@ -1,6 +1,10 @@
 .DS_Store
 .vscode/
+configs/train_experiment.yaml
 data/
+polyaxon/
+.polyaxonignore
+Makefile
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
