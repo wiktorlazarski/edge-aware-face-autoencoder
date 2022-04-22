@@ -36,7 +36,7 @@ class DataModule(pl.LightningDataModule):
 
     def setup(self, stage: t.Optional[str] = None) -> None:
         preprocessing_pipeline = ip.PreprocessingPipeline(
-            nn_image_input_resolution=self.nn_input_image_resolution,
+            nn_input_image_resolution=self.nn_input_image_resolution,
         )
         augmentation_pipeline = aug.AugmentationPipeline(
             use_all_augmentations=self.use_all_augmentations,

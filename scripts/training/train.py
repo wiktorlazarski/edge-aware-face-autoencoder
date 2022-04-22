@@ -59,7 +59,7 @@ def main(configs: omegaconf.DictConfig) -> None:
         gpus=1 if configs.training.with_gpu else 0,
     )
 
-    logger.info("🤹‍♀️ Starting training loop.")
+    logger.info("🤹 Starting training loop.")
     nn_trainer.fit(train_module, dataset_module)
 
     logger.info(f"🥇 Best model: {model_ckpt_callback.best_model_path}")
