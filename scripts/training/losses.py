@@ -37,11 +37,11 @@ class VanillaVAELoss(nn.Module):
         Returns:
             t.Tuple[torch.Tensor, torch.Tensor, torch.Tensor]: Tuple with (total_loss, unscaled reconstruction loss, unscaled KL divergence loss)
         """
-        recon_loss = F.mse_loss(y_true, y_pred)
-        kld_loss = torch.mean(
+        recon_loss = self.recon_weight * F.mse_loss(y_true, y_pred)
+        kld_loss = self.kld_weight * torch.mean(
             -0.5 * torch.sum(1 + log_var - mu ** 2 - log_var.exp(), dim=1), dim=0
         )
 
-        total_loss = self.recon_weight * recon_loss + self.kld_weight * kld_loss
+        total_loss = recon_loss + kld_loss
 
         return total_loss, recon_loss.detach(), kld_loss.detach()
