@@ -21,7 +21,7 @@ def test_encoder_init_raise_error() -> None:
 def test_encoder_output_size() -> None:
     # given
     latent_dim = 8
-    nn_input_image_resolution = 512
+    nn_input_image_resolution = 256
     hidden_dims = [32, 64, 128, 256, 512]
     encoder = mdl.VAEEncoder(
         latent_dim=latent_dim,
@@ -50,7 +50,7 @@ def test_encoder_output_size() -> None:
 
 def test_decoder_output_size() -> None:
     # given
-    nn_output_image_res = 512
+    nn_output_image_res = 256
     latent_dim = 8
     hidden_dims = [512, 256, 128, 64, 32]
 
@@ -77,7 +77,7 @@ def test_decoder_output_size() -> None:
 
 def test_variational_autoencoder_output_size() -> None:
     # given
-    nn_input_image_resolution = 512
+    nn_input_image_resolution = 256
     latent_dim = 8
     hidden_dims = [32, 64, 128, 256, 512]
 

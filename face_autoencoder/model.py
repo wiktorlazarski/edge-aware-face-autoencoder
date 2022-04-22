@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import typing as t
 
 import torch
@@ -208,16 +210,42 @@ class VAEDecoder(nn.Module):
 
 
 class VanillaVAE(nn.Module):
+    @staticmethod
+    def load_from_checkpoint(ckpt_path: str) -> VanillaVAE:
+        """Load model weight from checkpoint path.
+
+        Args:
+            ckpt_path (str): Checkpoint path
+
+        Returns:
+            VanillaVAE: Model.
+        """
+        ckpt = torch.load(ckpt_path, map_location=torch.device("cpu"))
+
+        hparams = ckpt["hyper_parameters"]
+        neural_net = VanillaVAE(
+            nn_input_image_resolution=hparams["nn_input_image_resolution"],
+            latent_dim=hparams["latent_dim"],
+            hidden_dims=hparams["hidden_dims"],
+        )
+
+        weigths = {
+            k.replace("neural_net.", ""): v for k, v in ckpt["state_dict"].items()
+        }
+        neural_net.load_state_dict(weigths, strict=False)
+
+        return neural_net
+
     def __init__(
         self,
-        nn_input_image_resolution: int = 512,
+        nn_input_image_resolution: int = 256,
         latent_dim: int = 8,
         hidden_dims: t.List[int] = [32, 64, 128, 256, 512],
     ) -> None:
         """Constructor.
 
         Args:
-            nn_input_image_resolution (int): Neural Network input image resolution. Assumes square image. Defaults to 512.
+            nn_input_image_resolution (int): Neural Network input image resolution. Assumes square image. Defaults to 256.
             latent_dim (int): Latend dimension size. Defaults to 8.
             hidden_dims (t.List[int], optional): Feature maps' channels hidden dimensions. Defaults to [32, 64, 128, 256, 512].
         """

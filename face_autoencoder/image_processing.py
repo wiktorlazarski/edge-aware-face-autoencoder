@@ -5,13 +5,13 @@ from torchvision import transforms
 
 
 class PreprocessingPipeline:
-    def __init__(self, nn_image_input_resolution: int) -> None:
-        self.nn_image_input_resolution = nn_image_input_resolution
+    def __init__(self, nn_input_image_resolution: int) -> None:
+        self.nn_input_image_resolution = nn_input_image_resolution
         self.image_preprocessing_pipeline = transforms.Compose(
             [
                 transforms.ToTensor(),
                 transforms.Resize(
-                    (nn_image_input_resolution, nn_image_input_resolution)
+                    (nn_input_image_resolution, nn_input_image_resolution)
                 ),
             ]
         )

@@ -6,6 +6,7 @@ polyaxon/
 .polyaxonignore
 Makefile
 train_experiment/
+face_autoencoder/model/*.ckpt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
