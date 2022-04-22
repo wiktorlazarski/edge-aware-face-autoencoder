@@ -16,7 +16,7 @@ class AugmentationPipeline:
         "pad_0.07": A.CropAndPad(percent=0.07, keep_size=False, p=1),
         "pad_0.04": A.CropAndPad(percent=0.04, keep_size=False, p=1),
         "pad_0.02": A.CropAndPad(percent=0.02, keep_size=False, p=1),
-        "same": A.CropAndPad(percent=0.0, keep_size=False, p=1),
+        "identity": A.CropAndPad(percent=0.0, keep_size=False, p=1),
     }
 
     __AUGMENTATIONS = {
@@ -46,34 +46,31 @@ class AugmentationPipeline:
     def __init__(
         self,
         use_all_augmentations: bool = True,
-        resize_augmentations_keys: t.Optional[t.List[str]] = None,
-        augmentations_keys: t.Optional[t.List[str]] = None,
+        resize_augmentation_keys: t.Optional[t.List[str]] = None,
+        augmentation_keys: t.Optional[t.List[str]] = None,
     ) -> None:
 
-        self.resize_augmentations = []
+        self.resize_augmentations = resize_augmentation_keys
         self.augmentations = []
 
-        if use_all_augmentations or resize_augmentations_keys is None:
+        if use_all_augmentations:
             self.resize_augmentations = list(
                 AugmentationPipeline.__RESIZE_AUGMENTATIONS.values()
             )
-        if use_all_augmentations or augmentations_keys is None:
-            self.augmentations = A.Compose(
-                list(AugmentationPipeline.__AUGMENTATIONS.values())
-            )
-        if not use_all_augmentations:
-            if resize_augmentations_keys is not None:
+            self.augmentations = list(AugmentationPipeline.__AUGMENTATIONS.values())
+        else:
+            if resize_augmentation_keys is not None:
                 self.resize_augmentations = [
                     AugmentationPipeline.__RESIZE_AUGMENTATIONS[resize_augmentation]
-                    for resize_augmentation in resize_augmentations_keys
+                    for resize_augmentation in resize_augmentation_keys
                 ]
-            if augmentations_keys is not None:
-                self.augmentations = A.Compose(
-                    [
-                        AugmentationPipeline.__AUGMENTATIONS[augmentation]
-                        for augmentation in augmentations_keys
-                    ]
-                )
+            if augmentation_keys is not None:
+                self.augmentations = [
+                    AugmentationPipeline.__AUGMENTATIONS[augmentation]
+                    for augmentation in augmentation_keys
+                ]
+
+        self.augmentations = A.Compose(self.augmentations)
 
     def __call__(self, image: np.ndarray) -> torch.Tensor:
         if self.resize_augmentations is not None:
