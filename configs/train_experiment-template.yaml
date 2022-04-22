@@ -6,14 +6,14 @@ hydra:
 dataset_module:
   batch_size: 4
   num_workers: 2
-  dataset_root: "/home/aneta/Desktop/GSN/code/edge-aware-face-autoencoder/data/dataset"
+  dataset_root: "path/to/dataset/root"
   use_all_augmentations: true
   resize_augmentation_keys: null
   augmentation_keys: null
 
 train_module:
   lr: 0.0001
-  nn_input_image_resolution: 512
+  nn_input_image_resolution: 256
   latent_dim: 16
   hidden_dims: [32, 64, 128, 256, 512]
   recon_loss_weight: 10000.0

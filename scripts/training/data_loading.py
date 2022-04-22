@@ -29,10 +29,11 @@ class CelebAFaceAutoencoderDataset(torchvision.datasets.VisionDataset):
         image = self.images[index]
         image = self._load_sample(image)
 
-        if self.preprocess_pipeline is not None:
-            image = self.preprocess_pipeline.preprocess_image(image=image)
         if self.augmentation_pipeline is not None:
             image = self.augmentation_pipeline(image=image)
+
+        if self.preprocess_pipeline is not None:
+            image = self.preprocess_pipeline.preprocess_image(image=image)
 
         return image
 

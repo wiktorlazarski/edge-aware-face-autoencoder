@@ -5,6 +5,7 @@ data/
 polyaxon/
 .polyaxonignore
 Makefile
+train_experiment/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

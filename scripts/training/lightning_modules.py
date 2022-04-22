@@ -18,19 +18,25 @@ class DataModule(pl.LightningDataModule):
         *,
         batch_size: int,
         num_workers: int,
+        dataset_root: str,
+        nn_input_image_resolution: int,
         use_all_augmentations: bool,
         resize_augmentation_keys: t.Optional[t.List[str]] = None,
         augmentation_keys: t.Optional[t.List[str]] = None,
     ) -> None:
+        super().__init__()
+
         self.batch_size = batch_size
         self.num_workers = num_workers
+        self.dataset_root = dataset_root
+        self.nn_input_image_resolution = nn_input_image_resolution
         self.use_all_augmentations = use_all_augmentations
         self.resize_augmentation_keys = resize_augmentation_keys
         self.augmentation_keys = augmentation_keys
 
     def setup(self, stage: t.Optional[str] = None) -> None:
         preprocessing_pipeline = ip.PreprocessingPipeline(
-            nn_image_input_resolution=self.nn_image_input_resolution,
+            nn_image_input_resolution=self.nn_input_image_resolution,
         )
         augmentation_pipeline = aug.AugmentationPipeline(
             use_all_augmentations=self.use_all_augmentations,
@@ -38,18 +44,18 @@ class DataModule(pl.LightningDataModule):
             augmentation_keys=self.augmentation_keys,
         )
         self.train_dataset = dl.CelebAFaceAutoencoderDataset(
-            dataset_root=os.path.join(self.dataset_root, "train/images"),
+            dataset_root=os.path.join(self.dataset_root, "train"),
             preprocess_pipeline=preprocessing_pipeline,
             augmentation_pipeline=augmentation_pipeline,
         )
 
         self.validation_dataset = dl.CelebAFaceAutoencoderDataset(
-            dataset_root=os.path.join(self.dataset_root, "val/images"),
+            dataset_root=os.path.join(self.dataset_root, "val"),
             preprocess_pipeline=preprocessing_pipeline,
         )
 
         self.test_dataset = dl.CelebAFaceAutoencoderDataset(
-            dataset_root=os.path.join(self.dataset_root, "test/images"),
+            dataset_root=os.path.join(self.dataset_root, "test"),
             preprocess_pipeline=preprocessing_pipeline,
         )
 
@@ -117,17 +123,17 @@ class TrainingModule(pl.LightningModule):
     def training_step(
         self, batch: t.Tuple[torch.Tensor, torch.Tensor], batch_idx: int
     ) -> pl.utilities.types.STEP_OUTPUT:
-        return self._step(batch)
+        return self._step(batch, mse_metric=self.train_mse)
 
     def validation_step(
         self, batch: t.Tuple[torch.Tensor, torch.Tensor], batch_idx: int
     ) -> pl.utilities.types.STEP_OUTPUT:
-        return self._step(batch)
+        return self._step(batch, mse_metric=self.val_mse)
 
     def test_step(
         self, batch: t.Tuple[torch.Tensor, torch.Tensor], batch_idx: int
     ) -> pl.utilities.types.STEP_OUTPUT:
-        return self._step(batch)
+        return self._step(batch, mse_metric=self.test_mse)
 
     def training_epoch_end(self, outputs: pl.utilities.types.EPOCH_OUTPUT) -> None:
         self._summarize_epoch(
@@ -150,15 +156,16 @@ class TrainingModule(pl.LightningModule):
         batch: t.Tuple[torch.Tensor, torch.Tensor],
         mse_metric: torchmetrics.MeanSquaredError,
     ) -> pl.utilities.types.STEP_OUTPUT:
-        image, px_weights = batch
+        images = batch
+        reconstructions, mu, log_var = self.neural_net(images)
 
-        reconstruction = self.neural_net(image)
+        loss, recon_loss, kld_loss = self.criterion(
+            reconstructions, images, mu, log_var
+        )
 
-        loss = self.criterion(reconstruction, image, px_weights)
+        mse_metric(reconstructions, images)
 
-        mse_metric(reconstruction, image)
-
-        return {"loss": loss}
+        return {"loss": loss, "recon_loss": recon_loss, "kld_loss": kld_loss}
 
     def _summarize_epoch(
         self,
@@ -167,7 +174,12 @@ class TrainingModule(pl.LightningModule):
         mse_metric: torchmetrics.MeanSquaredError,
     ) -> None:
         mean_loss = torch.tensor([out["loss"] for out in outputs]).mean()
+        mean_recon_loss = torch.tensor([out["recon_loss"] for out in outputs]).mean()
+        mean_kld_loss = torch.tensor([out["kld_loss"] for out in outputs]).mean()
+
         self.log(f"{log_prefix}_loss", mean_loss, on_epoch=True)
+        self.log(f"{log_prefix}_recon_loss", mean_recon_loss, on_epoch=True)
+        self.log(f"{log_prefix}_kld_loss", mean_kld_loss, on_epoch=True)
 
         mse = mse_metric.compute()
 
