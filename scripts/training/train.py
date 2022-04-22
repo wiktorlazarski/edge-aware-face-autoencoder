@@ -56,7 +56,6 @@ def main(configs: omegaconf.DictConfig) -> None:
         log_every_n_steps=1,
         callbacks=[early_stop_callback, model_ckpt_callback],
         max_epochs=configs.training.max_epochs,
-        weights_save_path="models",
         gpus=1 if configs.training.with_gpu else 0,
     )
 
