@@ -20,12 +20,8 @@ def main(configs: omegaconf.DictConfig) -> None:
 
     logger.info("📚 Creating dataset module.")
     dataset_module = lm.DataModule(
-        batch_size=configs.dataset_module.batch_size,
-        num_workers=configs.dataset_module.num_workersSS,
+        **configs.dataset_module,
         nn_input_image_resolution=configs.train_module.nn_input_image_resolution,
-        use_all_augmentations=configs.dataset_module.use_all_augmentations,
-        resize_augmentations_keys=configs.dataset_module.resize_augmentations_keys,
-        augmentation_keys=configs.dataset_module.augmentation_keys,
     )
 
     logger.info("🕸 Creating training module.")
@@ -68,7 +64,7 @@ def main(configs: omegaconf.DictConfig) -> None:
     nn_trainer.fit(train_module, dataset_module)
 
     logger.info("🧪 Starting testing loop.")
-    nn_trainer.test()
+    nn_trainer.test(train_module, dataset_module)
 
     logger.success("🏁 Training process finished.")
 
