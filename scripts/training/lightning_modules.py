@@ -1,10 +1,14 @@
+import os
 import typing as t
 
 import pytorch_lightning as pl
 import torch
 import torchmetrics
 
+import face_autoencoder.image_processing as ip
 import face_autoencoder.model as mdl
+import scripts.training.augmentations as aug
+import scripts.training.data_loading as dl
 from scripts.training import losses
 
 
@@ -14,14 +18,40 @@ class DataModule(pl.LightningDataModule):
         *,
         batch_size: int,
         num_workers: int,
+        use_all_augmentations: bool,
+        resize_augmentation_keys: t.Optional[t.List[str]] = None,
+        augmentation_keys: t.Optional[t.List[str]] = None,
     ) -> None:
         self.batch_size = batch_size
         self.num_workers = num_workers
+        self.use_all_augmentations = use_all_augmentations
+        self.resize_augmentation_keys = resize_augmentation_keys
+        self.augmentation_keys = augmentation_keys
 
     def setup(self, stage: t.Optional[str] = None) -> None:
-        self.train_dataset = None
-        self.validation_dataset = None
-        self.test_dataset = None
+        preprocessing_pipeline = ip.PreprocessingPipeline(
+            nn_image_input_resolution=self.nn_image_input_resolution,
+        )
+        augmentation_pipeline = aug.AugmentationPipeline(
+            use_all_augmentations=self.use_all_augmentations,
+            resize_augmentation_keys=self.resize_augmentation_keys,
+            augmentation_keys=self.augmentation_keys,
+        )
+        self.train_dataset = dl.CelebAFaceAutoencoderDataset(
+            dataset_root=os.path.join(self.dataset_root, "train/images"),
+            preprocess_pipeline=preprocessing_pipeline,
+            augmentation_pipeline=augmentation_pipeline,
+        )
+
+        self.validation_dataset = dl.CelebAFaceAutoencoderDataset(
+            dataset_root=os.path.join(self.dataset_root, "val/images"),
+            preprocess_pipeline=preprocessing_pipeline,
+        )
+
+        self.test_dataset = dl.CelebAFaceAutoencoderDataset(
+            dataset_root=os.path.join(self.dataset_root, "test/images"),
+            preprocess_pipeline=preprocessing_pipeline,
+        )
 
     def train_dataloader(self) -> torch.utils.data.DataLoader:
         return torch.utils.data.DataLoader(
