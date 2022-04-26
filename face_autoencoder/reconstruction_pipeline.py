@@ -12,10 +12,12 @@ class VAEReconstructionPipeline:
     def __init__(
         self,
         model_path: str = C.FACE_VAE_MODEL_PATH,
-        nn_input_image_resolution: int = 256,
     ):
+        ckpt = torch.load(model_path, map_location=torch.device("cpu"))
+        hparams = ckpt["hyper_parameters"]
+
         self._preprocessing_pipeline = ip.PreprocessingPipeline(
-            nn_input_image_resolution=nn_input_image_resolution
+            nn_input_image_resolution=hparams["nn_input_image_resolution"]
         )
         self.nn_model = mdl.VanillaVAE.load_from_checkpoint(ckpt_path=model_path)
         self.nn_model.eval()
