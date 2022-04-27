@@ -11,7 +11,7 @@ repos:
   rev: v3.4.0
   hooks:
       - id: check-added-large-files
-        args: ['--maxkb=30000']
+        args: ['--maxkb=100000']
       - id: no-commit-to-branch
         args: ['--branch', 'master']
       - id: requirements-txt-fixer
