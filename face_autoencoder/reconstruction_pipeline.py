@@ -1,7 +1,10 @@
+import os
 import typing as t
 
+import gdown
 import numpy as np
 import torch
+from loguru import logger
 
 import face_autoencoder.constants as C
 import face_autoencoder.image_processing as ip
@@ -12,7 +15,17 @@ class VAEReconstructionPipeline:
     def __init__(
         self,
         model_path: str = C.FACE_VAE_MODEL_PATH,
+        model_url: str = C.FACE_VAE_MODEL_DOWNLOAD_URL,
     ):
+        if not os.path.exists(model_path):
+            model_path = C.FACE_VAE_MODEL_PATH
+
+            logger.warning(
+                f"Model {model_path} doesn't exist. Downloading the model to {model_path}."
+            )
+
+            gdown.download(model_url, model_path, quiet=False)
+
         ckpt = torch.load(model_path, map_location=torch.device("cpu"))
         hparams = ckpt["hyper_parameters"]
 
