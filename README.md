@@ -1,7 +1,7 @@
 ______________________________________________________________________
 <div align="center">
 
-# 👨‍🎨 Edge-aware face Autoencoder
+# 👨‍🎨 Edge-aware Face Autoencoder
 
 <p align="center">
   <a href="https://github.com/wiktorlazarski">👨‍🎓 Wiktor</a>
@@ -38,7 +38,7 @@ python -m venv venv
 source ./venv/bin/activate
 
 # Install project in editable mode
-pip install -e .
+pip install -e .[dev]
 
 # (Optional but recommended) Install pre-commit hooks to preserve code format consistency
 pre-commit install
