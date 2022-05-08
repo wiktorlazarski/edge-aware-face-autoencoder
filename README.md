@@ -11,7 +11,7 @@ ______________________________________________________________________
 ______________________________________________________________________
 
 [![ci-testing](https://github.com/wiktorlazarski/face-vae/actions/workflows/ci-testing.yml/badge.svg?branch=master&event=push)](https://github.com/wiktorlazarski/edge-aware-face-autoencoder/actions/workflows/ci-testing.yml)
-[![Open In Collab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/pytorch/ignite/blob/master/examples/notebooks/FashionMNIST.ipynb)
+[![Open In Collab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1b3afUvKmuWQblkxIpGxUAOt0pZk3DBa3?usp=sharing)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 </div>

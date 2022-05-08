@@ -18,11 +18,12 @@ class VAEReconstructionPipeline:
         model_url: str = C.FACE_VAE_MODEL_DOWNLOAD_URL,
     ):
         if not os.path.exists(model_path):
+            model_path = C.FACE_VAE_MODEL_PATH
+
             logger.warning(
-                f"Model {model_path} doesn't exist. Downloading and caching the model to {model_url}."
+                f"Model {model_path} doesn't exist. Downloading the model to {model_path}."
             )
 
-            model_path = C.FACE_VAE_MODEL_PATH
             gdown.download(model_url, model_path, quiet=False)
 
         ckpt = torch.load(model_path, map_location=torch.device("cpu"))
