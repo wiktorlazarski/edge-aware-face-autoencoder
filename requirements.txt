@@ -1,6 +1,7 @@
 albumentations
 black
 flake8
+gdown
 hydra-core
 isort
 jupyterlab
