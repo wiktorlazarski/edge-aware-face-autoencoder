@@ -63,6 +63,7 @@ def main(configs: omegaconf.DictConfig) -> None:
     nn_trainer.fit(train_module, dataset_module)
 
     logger.info(f"🥇 Best model: {model_ckpt_callback.best_model_path}")
+    train_module.load_from_checkpoint(model_ckpt_callback.best_model_path)
 
     logger.info("🧪 Starting testing loop.")
     nn_trainer.test(train_module, dataset_module)
