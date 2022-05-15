@@ -87,7 +87,7 @@ class CelebAFaceAutoencoderDatasetWithEdges(torchvision.datasets.VisionDataset):
         edges_path = p.Path(self.root) / "edges"
 
         images = sorted(list(images_path.glob("*.jpg")))
-        edges = sorted(list(edges_path.glob("*.jpg")))
+        edges = sorted(list(edges_path.glob("*.png")))
 
         return images, edges
 

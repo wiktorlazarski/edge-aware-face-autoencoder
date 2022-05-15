@@ -4,6 +4,7 @@ import random
 import shutil
 import typing as t
 from pathlib import Path
+
 import cv2
 
 
@@ -46,7 +47,15 @@ def copy_images_with_edges(dset_root: Path) -> None:
             img = cv2.imread(str(image), cv2.IMREAD_COLOR)
             img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
             img = cv2.Canny(img, threshold1=50, threshold2=110)
-            cv2.imwrite(str(dset_root / name_dataset / "edges" / image.name), img)
+            cv2.imwrite(
+                str(
+                    dset_root
+                    / name_dataset
+                    / "edges"
+                    / image.name.replace(".jpg", ".png")
+                ),
+                img,
+            )
 
 
 def main() -> None:
