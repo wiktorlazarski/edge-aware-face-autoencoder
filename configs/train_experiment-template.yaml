@@ -10,6 +10,7 @@ dataset_module:
   use_all_augmentations: true
   resize_augmentation_keys: null
   augmentation_keys: null
+  weights: 10
 
 train_module:
   lr: 0.0001
