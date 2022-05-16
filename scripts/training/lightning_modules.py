@@ -199,7 +199,7 @@ class DataModuleWithEdges(pl.LightningDataModule):
         use_all_augmentations: bool,
         resize_augmentation_keys: t.Optional[t.List[str]] = None,
         augmentation_keys: t.Optional[t.List[str]] = None,
-        edges: int,
+        edge_weight: int,
     ) -> None:
         super().__init__()
 
@@ -210,7 +210,7 @@ class DataModuleWithEdges(pl.LightningDataModule):
         self.use_all_augmentations = use_all_augmentations
         self.resize_augmentation_keys = resize_augmentation_keys
         self.augmentation_keys = augmentation_keys
-        self.edges = edges
+        self.edge_weight = edge_weight
 
     def setup(self, stage: t.Optional[str] = None) -> None:
         preprocessing_pipeline = ip.PreprocessingPipelineWithEdges(

@@ -76,9 +76,8 @@ class CelebAFaceAutoencoderDatasetWithEdges(torchvision.datasets.VisionDataset):
             image, edge = self.augmentation_pipeline(image=image, edge=edge)
 
         if self.preprocess_pipeline is not None:
-            image, edge = self.preprocess_pipeline.preprocess_image(
-                image=image, edge=edge
-            )
+            image = self.preprocess_pipeline.preprocess_image(image=image)
+            edge = self.preprocess_pipeline.preprocess_edge(edge=edge)
 
         return image, edge
 
@@ -95,7 +94,6 @@ class CelebAFaceAutoencoderDatasetWithEdges(torchvision.datasets.VisionDataset):
         image = cv2.imread(str(image_name), cv2.IMREAD_COLOR)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-        edge = cv2.imread(str(edge_name), cv2.IMREAD_COLOR)
-        edge = cv2.cvtColor(edge, cv2.COLOR_BGR2RGB)
+        edge = cv2.imread(str(edge_name), cv2.IMREAD_GRAYSCALE)
 
         return image, edge
