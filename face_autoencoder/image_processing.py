@@ -3,6 +3,7 @@ import typing as t
 import numpy as np
 import torch
 from PIL import Image
+from skimage.transform import resize
 from torchvision import transforms
 
 
@@ -47,8 +48,17 @@ class PreprocessingPipelineWithEdges:
         return self.image_preprocessing_pipeline(Image.fromarray(image))
 
     def preprocess_edge(self, edge: np.ndarray) -> torch.Tensor:
-        edge = self.image_preprocessing_pipeline(Image.fromarray(edge))
-        edge[edge != 0] = self.weights
+        edge = resize(
+            edge,
+            (self.nn_input_image_resolution, self.nn_input_image_resolution),
+            mode="edge",
+            anti_aliasing=False,
+            anti_aliasing_sigma=None,
+            preserve_range=True,
+            order=0,
+        )
+        edge = torch.Tensor(edge)
+        edge[edge == 255] = self.weights
         edge[edge == 0] = 1
 
         return edge
