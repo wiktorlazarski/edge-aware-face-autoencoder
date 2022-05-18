@@ -60,7 +60,7 @@ class CelebAFaceAutoencoderDatasetWithEdges(torchvision.datasets.VisionDataset):
     ) -> None:
         super().__init__(root=dataset_root)
 
-        self.images, self.edges = self._load_images()
+        self.images, self.edges = self._load_samples()
         self.preprocess_pipeline = preprocess_pipeline
         self.augmentation_pipeline = augmentation_pipeline
 
@@ -77,11 +77,11 @@ class CelebAFaceAutoencoderDatasetWithEdges(torchvision.datasets.VisionDataset):
 
         if self.preprocess_pipeline is not None:
             image = self.preprocess_pipeline.preprocess_image(image=image)
-            edge = self.preprocess_pipeline.preprocess_edge(edge=edge)
+            edge = self.preprocess_pipeline.preprocess_edge(edges=edge)
 
         return image, edge
 
-    def _load_images(self) -> t.List[str]:
+    def _load_samples(self) -> t.List[str]:
         images_path = p.Path(self.root) / "images"
         edges_path = p.Path(self.root) / "edges"
 

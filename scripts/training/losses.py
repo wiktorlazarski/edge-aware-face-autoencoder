@@ -65,7 +65,7 @@ class VanillaVAELossWithEdges(nn.Module):
         self,
         y_true: torch.Tensor,
         y_pred: torch.Tensor,
-        edges: torch.Tensor,
+        edges_weights: torch.Tensor,
         mu: torch.Tensor,
         log_var: torch.Tensor,
     ) -> t.Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
@@ -76,12 +76,12 @@ class VanillaVAELossWithEdges(nn.Module):
             y_pred (torch.Tensor): Prediction.
             mu (torch.Tensor): mu prediction.
             log_var (torch.Tensor): Logarithm of variance prediction.
-            edges (torch.Tensor): Edges from target.
+            edges_weights (torch.Tensor): Edges from target.
 
         Returns:
             t.Tuple[torch.Tensor, torch.Tensor, torch.Tensor]: Tuple with (total_loss, unscaled reconstruction loss, unscaled KL divergence loss)
         """
-        recon_loss = self.recon_weight * (F.mse_loss(y_true, y_pred) * edges)
+        recon_loss = self.recon_weight * (F.mse_loss(y_true, y_pred) * edges_weights)
         kld_loss = self.kld_weight * torch.mean(
             -0.5 * torch.sum(1 + log_var - mu ** 2 - log_var.exp(), dim=1), dim=0
         )
