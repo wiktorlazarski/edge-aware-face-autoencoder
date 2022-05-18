@@ -48,10 +48,12 @@ class AugmentationPipeline:
         use_all_augmentations: bool = True,
         resize_augmentation_keys: t.Optional[t.List[str]] = None,
         augmentation_keys: t.Optional[t.List[str]] = None,
+        use_edges: t.Optional[bool] = False,
     ) -> None:
 
         self.resize_augmentations = resize_augmentation_keys
         self.augmentations = []
+        self.use_edges = use_edges
 
         if use_all_augmentations:
             self.resize_augmentations = list(
@@ -72,11 +74,25 @@ class AugmentationPipeline:
 
         self.augmentations = A.Compose(self.augmentations)
 
-    def __call__(self, image: np.ndarray) -> torch.Tensor:
-        if self.resize_augmentations is not None:
-            resize_augmentation = random.choice(self.resize_augmentations)
-            resized_image = resize_augmentation(image=image)
-            augmentation_result = self.augmentations(image=resized_image["image"])
+    def __call__(
+        self, image: np.ndarray, edge: np.ndarray = None
+    ) -> t.Tuple[torch.Tensor, torch.Tensor]:
+        if self.use_edges is True:
+            if self.resize_augmentations is not None:
+                resize_augmentation = random.choice(self.resize_augmentations)
+                resized_image = resize_augmentation(image=image, mask=edge)
+                augmentation_result = self.augmentations(
+                    image=resized_image["image"], mask=resized_image["mask"]
+                )
+            else:
+                augmentation_result = self.augmentations(image=image, mask=edge)
+            return augmentation_result["image"], augmentation_result["mask"]
+
         else:
-            augmentation_result = self.augmentations(image=image)
-        return augmentation_result["image"]
+            if self.resize_augmentations is not None:
+                resize_augmentation = random.choice(self.resize_augmentations)
+                resized_image = resize_augmentation(image=image)
+                augmentation_result = self.augmentations(image=resized_image["image"])
+            else:
+                augmentation_result = self.augmentations(image=image)
+            return augmentation_result["image"]
