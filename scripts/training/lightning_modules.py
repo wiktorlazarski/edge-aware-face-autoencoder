@@ -213,13 +213,15 @@ class DataModuleWithEdges(pl.LightningDataModule):
         self.edge_weight = edge_weight
 
     def setup(self, stage: t.Optional[str] = None) -> None:
-        preprocessing_pipeline = ip.PreprocessingPipelineWithEdges(
+        preprocessing_pipeline = ip.PreprocessingPipeline(
             nn_input_image_resolution=self.nn_input_image_resolution,
+            edge_weight=self.edge_weight,
         )
-        augmentation_pipeline = aug.AugmentationPipelineWithEdges(
+        augmentation_pipeline = aug.AugmentationPipeline(
             use_all_augmentations=self.use_all_augmentations,
             resize_augmentation_keys=self.resize_augmentation_keys,
             augmentation_keys=self.augmentation_keys,
+            use_edges=True,
         )
         self.train_dataset = dl.CelebAFaceAutoencoderDatasetWithEdges(
             dataset_root=os.path.join(self.dataset_root, "train"),
@@ -336,14 +338,14 @@ class TrainingModuleWithEdges(pl.LightningModule):
         batch: t.Tuple[torch.Tensor, torch.Tensor],
         mse_metric: torchmetrics.MeanSquaredError,
     ) -> pl.utilities.types.STEP_OUTPUT:
-        image, edge = batch
-        reconstructions, mu, log_var = self.neural_net(image)
+        images, edges = batch
+        reconstructions, mu, log_var = self.neural_net(images)
 
         loss, recon_loss, kld_loss = self.criterion(
-            reconstructions, image, edge, mu, log_var
+            reconstructions, images, edges, mu, log_var
         )
 
-        mse_metric(reconstructions, image)
+        mse_metric(reconstructions, images)
 
         return {"loss": loss, "recon_loss": recon_loss, "kld_loss": kld_loss}
 

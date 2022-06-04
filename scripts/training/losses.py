@@ -81,7 +81,11 @@ class VanillaVAELossWithEdges(nn.Module):
         Returns:
             t.Tuple[torch.Tensor, torch.Tensor, torch.Tensor]: Tuple with (total_loss, unscaled reconstruction loss, unscaled KL divergence loss)
         """
-        recon_loss = self.recon_weight * (F.mse_loss(y_true, y_pred) * edges_weights)
+        recon_loss = (
+            self.recon_weight
+            * ((y_true - y_pred) ** 2 * edges_weights.unsqueeze(dim=1)).mean()
+        )
+
         kld_loss = self.kld_weight * torch.mean(
             -0.5 * torch.sum(1 + log_var - mu ** 2 - log_var.exp(), dim=1), dim=0
         )

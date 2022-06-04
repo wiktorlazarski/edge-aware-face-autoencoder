@@ -75,17 +75,17 @@ class AugmentationPipeline:
         self.augmentations = A.Compose(self.augmentations)
 
     def __call__(
-        self, image: np.ndarray, edge: np.ndarray = None
+        self, image: np.ndarray, edges: np.ndarray = None
     ) -> t.Tuple[torch.Tensor, torch.Tensor]:
         if self.use_edges is True:
             if self.resize_augmentations is not None:
                 resize_augmentation = random.choice(self.resize_augmentations)
-                resized_image = resize_augmentation(image=image, mask=edge)
+                resized_image = resize_augmentation(image=image, mask=edges)
                 augmentation_result = self.augmentations(
                     image=resized_image["image"], mask=resized_image["mask"]
                 )
             else:
-                augmentation_result = self.augmentations(image=image, mask=edge)
+                augmentation_result = self.augmentations(image=image, mask=edges)
             return augmentation_result["image"], augmentation_result["mask"]
 
         else:
@@ -95,4 +95,5 @@ class AugmentationPipeline:
                 augmentation_result = self.augmentations(image=resized_image["image"])
             else:
                 augmentation_result = self.augmentations(image=image)
+
             return augmentation_result["image"]

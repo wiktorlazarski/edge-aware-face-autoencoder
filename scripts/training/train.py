@@ -19,13 +19,13 @@ def main(configs: omegaconf.DictConfig) -> None:
     logger.info("🚀 Training process started.")
 
     logger.info("📚 Creating dataset module.")
-    dataset_module = lm.DataModule(
+    dataset_module = lm.DataModuleWithEdges(
         **configs.dataset_module,
         nn_input_image_resolution=configs.train_module.nn_input_image_resolution,
     )
 
     logger.info("🕸 Creating training module.")
-    train_module = lm.TrainingModule(**configs.train_module)
+    train_module = lm.TrainingModuleWithEdges(**configs.train_module)
 
     logger.info("📲 Initializing callbacks.")
     early_stop_callback = pl.callbacks.early_stopping.EarlyStopping(

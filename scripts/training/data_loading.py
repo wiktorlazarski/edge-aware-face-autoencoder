@@ -69,17 +69,17 @@ class CelebAFaceAutoencoderDatasetWithEdges(torchvision.datasets.VisionDataset):
 
     def __getitem__(self, index: int) -> t.Tuple[torch.Tensor, torch.Tensor]:
         image = self.images[index]
-        edge = self.edges[index]
-        image, edge = self._load_sample(image, edge)
+        im_edges = self.edges[index]
+        image, edges = self._load_sample(image, im_edges)
 
         if self.augmentation_pipeline is not None:
-            image, edge = self.augmentation_pipeline(image=image, edge=edge)
+            image, edges = self.augmentation_pipeline(image=image, edges=edges)
 
         if self.preprocess_pipeline is not None:
             image = self.preprocess_pipeline.preprocess_image(image=image)
-            edge = self.preprocess_pipeline.preprocess_edge(edges=edge)
+            edges = self.preprocess_pipeline.preprocess_edge(edges=edges)
 
-        return image, edge
+        return image, edges
 
     def _load_samples(self) -> t.List[str]:
         images_path = p.Path(self.root) / "images"
