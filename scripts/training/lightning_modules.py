@@ -221,7 +221,6 @@ class DataModuleWithEdges(pl.LightningDataModule):
             use_all_augmentations=self.use_all_augmentations,
             resize_augmentation_keys=self.resize_augmentation_keys,
             augmentation_keys=self.augmentation_keys,
-            use_edges=True,
         )
         self.train_dataset = dl.CelebAFaceAutoencoderDatasetWithEdges(
             dataset_root=os.path.join(self.dataset_root, "train"),

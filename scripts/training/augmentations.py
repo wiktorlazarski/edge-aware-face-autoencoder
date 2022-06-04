@@ -48,12 +48,10 @@ class AugmentationPipeline:
         use_all_augmentations: bool = True,
         resize_augmentation_keys: t.Optional[t.List[str]] = None,
         augmentation_keys: t.Optional[t.List[str]] = None,
-        use_edges: t.Optional[bool] = False,
     ) -> None:
 
         self.resize_augmentations = resize_augmentation_keys
         self.augmentations = []
-        self.use_edges = use_edges
 
         if use_all_augmentations:
             self.resize_augmentations = list(
@@ -77,7 +75,7 @@ class AugmentationPipeline:
     def __call__(
         self, image: np.ndarray, edges: np.ndarray = None
     ) -> t.Tuple[torch.Tensor, torch.Tensor]:
-        if self.use_edges is True:
+        if edges is not None:
             if self.resize_augmentations is not None:
                 resize_augmentation = random.choice(self.resize_augmentations)
                 resized_image = resize_augmentation(image=image, mask=edges)
