@@ -24,6 +24,28 @@ Installation is as simple as running:
 pip install git+https://github.com/wiktorlazarski/edge-aware-face-autoencoder.git
 ```
 
+## 🧐 Qualitative results
+
+#### Original images
+![alt text](https://github.com/wiktorlazarski/edge-aware-face-autoencoder/blob/master/doc/images/original_imgs.png)
+
+---
+
+#### Baseline model without edge-awareness trained on images with 256px resolution, VAE latent dimension equals to 512 and reconstruction loss weight equals to 100 000. Edges' weight was set to 1.
+![alt text](https://github.com/wiktorlazarski/edge-aware-face-autoencoder/blob/master/doc/images/baseline-256px-512ld-100k.png)
+
+---
+
+#### Edge-aware model with edges' weight set to 3. All other parameters were the same as in the baseline model.
+![alt text](https://github.com/wiktorlazarski/edge-aware-face-autoencoder/blob/master/doc/images/edgeaware-edge_weight3.png)
+
+---
+
+#### Edge-aware model with edges' weight set to 10. All other parameters were the same as in the baseline model.
+![alt text](https://github.com/wiktorlazarski/edge-aware-face-autoencoder/blob/master/doc/images/edgeaware_edge_weight10.png)
+
+---
+
 ## ⚙️ Setup for development with `pip`
 
 ```bash
